@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Data Visualization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Interactive Data Visualization</h1>
+    <div id="chart"></div>
+
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: "/salesperday",
+                type: "GET",
+                success: function(data) {
+                    var graphJSON = JSON.parse(data);
+                    Plotly.newPlot('chart', graphJSON.data, graphJSON.layout);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+</html>
