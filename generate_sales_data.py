@@ -8,22 +8,31 @@ fake = Faker()
 
 def generate_sales_data(num_entries):
     data = []
+    items = [
+        {"item_id": "1", "name": "Laptop"},
+        {"item_id": "2", "name": "Smartphone"},
+        {"item_id": "3", "name": "Tablet"},
+        {"item_id": "4", "name": "Headphones"},
+        {"item_id": "5", "name": "Smartwatch"}
+    ]
+    
     for _ in range(num_entries):
         transaction_id = fake.uuid4()
         date = fake.date_time_between(start_date='-1y', end_date='now')
         customer_id = fake.uuid4()
-        items = []
+        sold_items = []
         num_items = randint(1, 5)  # Random number of items per transaction
         for _ in range(num_items):
-            item_id = fake.uuid4()
+            item = choice(items)
             quantity = randint(1, 10)
-            price = round(random.uniform(1.0, 100.0), 2)
-            items.append({
-                "item_id": str(item_id),
+            price = round(random.uniform(50.0, 1000.0), 2)
+            sold_items.append({
+                "item_id": item["item_id"],
+                "item_name": item["name"],
                 "quantity": quantity,
                 "price": price
             })
-        total_amount = sum(item['quantity'] * item['price'] for item in items)
+        total_amount = sum(item['quantity'] * item['price'] for item in sold_items)
         payment_method = choice(['credit card', 'cash', 'paypal'])
         location = fake.city()
         
@@ -31,7 +40,7 @@ def generate_sales_data(num_entries):
             "transaction_id": str(transaction_id),
             "date": date,
             "customer_id": str(customer_id),
-            "items": items,
+            "items": sold_items,
             "total_amount": total_amount,
             "payment_method": payment_method,
             "location": location

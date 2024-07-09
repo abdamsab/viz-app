@@ -9,12 +9,14 @@
 </head>
 <body>
     <h1>Interactive Data Visualization</h1>
+    <button id="sales-per-day-btn">Sales Per Day</button>
+    <button id="sold-per-item-btn">Sales Per Item</button>
     <div id="chart"></div>
 
     <script>
-        $(document).ready(function(){
+        function fetchData(url) {
             $.ajax({
-                url: "/salesperday",
+                url: url,
                 type: "GET",
                 success: function(data) {
                     var graphJSON = JSON.parse(data);
@@ -24,8 +26,21 @@
                     console.error('Error fetching data:', error);
                 }
             });
+        }
+
+        $(document).ready(function(){
+            // Load the default chart (Sales Per Day)
+            fetchData("/salesperday");
+
+            // Button click handlers
+            $('#sales-per-day-btn').click(function() {
+                fetchData("/salesperday");
+            });
+
+            $('#sold-per-item-btn').click(function() {
+                fetchData("/soldperitem");
+            });
         });
     </script>
 </body>
-</html>
 </html>
