@@ -6,39 +6,42 @@
     <title>Interactive Data Visualization</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
 </head>
 <body>
     <h1>Interactive Data Visualization</h1>
-    <button id="sales-per-day-btn">Sales Per Day</button>
-    <button id="sold-per-item-btn">Sales Per Item</button>
-    <div id="chart"></div>
+    <div id="chart-sales-per-day"></div>
+    <div id="chart-items-sold"></div>
 
     <script>
-        function fetchData(url) {
-            $.ajax({
-                url: url,
-                type: "GET",
-                success: function(data) {
-                    var graphJSON = JSON.parse(data);
-                    Plotly.newPlot('chart', graphJSON.data, graphJSON.layout);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                }
-            });
-        }
-
         $(document).ready(function(){
-            // Load the default chart (Sales Per Day)
-            fetchData("/salesperday");
+            function fetchData() {
+                $.ajax({
+                    url: "/salesperday",
+                    type: "GET",
+                    success: function(data) {
+                        var graphJSON = JSON.parse(data);
+                        Plotly.newPlot('chart-sales-per-day', graphJSON.data, graphJSON.layout);
+                    }
+                });
 
-            // Button click handlers
-            $('#sales-per-day-btn').click(function() {
-                fetchData("/salesperday");
-            });
+                $.ajax({
+                    url: "/soldperitem",
+                    type: "GET",
+                    success: function(data) {
+                        var graphJSON = JSON.parse(data);
+                        Plotly.newPlot('chart-items-sold', graphJSON.data, graphJSON.layout);
+                    }
+                });
+            }
 
-            $('#sold-per-item-btn').click(function() {
-                fetchData("/soldperitem");
+            // Initial fetch
+            fetchData();
+
+            // Set up WebSocket connection
+            var socket = io();
+            socket.on('new_data', function() {
+                fetchData();
             });
         });
     </script>
