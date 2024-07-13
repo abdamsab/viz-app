@@ -82,10 +82,10 @@ def sold_per_item():
         # Create Plotly chart
         df_items_sold = pd.DataFrame(items_sold_list)
     
-        df_items_sold_gp = df_items_sold.groupby('item_name')['quantity'].sum()
-        df_items_sold_gp = pd.DataFrame(df_items_sold_gp).reset_index()
+        df_items_sold_gp = df_items_sold.groupby('item_name')['quantity'].sum().reset_index()
+        #df_items_sold_gp = pd.DataFrame(df_items_sold_gp).reset_index()
         df_items_sold_gp.columns = ['item_name', 'quantity']
-        
+        print(df_items_sold_gp)
         fig = px.bar(df_items_sold_gp, x='item_name', y='quantity', title='Total Items Sold')
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
