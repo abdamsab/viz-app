@@ -72,12 +72,21 @@ def sold_per_item():
                         'quantity': quantity
                     }
 
+       
+
         # Convert items_sold dictionary to a list of dictionaries
         items_sold_list = [{'item_id': k, **v} for k, v in items_sold.items()]
 
+    
+
         # Create Plotly chart
         df_items_sold = pd.DataFrame(items_sold_list)
-        fig = px.bar(df_items_sold, x='item_name', y='quantity', title='Total Items Sold')
+    
+        df_items_sold_gp = df_items_sold.groupby('item_name')['quantity'].sum()
+        df_items_sold_gp = pd.DataFrame(df_items_sold_gp).reset_index()
+        df_items_sold_gp.columns = ['item_name', 'quantity']
+        
+        fig = px.bar(df_items_sold_gp, x='item_name', y='quantity', title='Total Items Sold')
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
         return graphJSON
